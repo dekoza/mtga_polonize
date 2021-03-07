@@ -1,7 +1,6 @@
 import shutil
 import time
 import zipfile
-from typing import Union
 
 import PySimpleGUI as sg
 from pathlib import Path
@@ -11,6 +10,7 @@ import requests
 from appdirs import AppDirs
 import tempfile
 
+DEFAULT_PATH = "C:/Program Files/Wizards of the Coast/MTGA/"
 APP_NAME = "pl.mtgpopolsku.app"
 APP_AUTHOR = "mtgpopolsku"
 TRANSLATION_URL = "https://api.github.com/repos/dekoza/mtgpl/releases/latest"
@@ -18,8 +18,10 @@ CHUNK_SIZE = 4096
 
 dirs = AppDirs(APP_NAME, APP_AUTHOR)
 
+check_path = Path(DEFAULT_PATH)
+
 s = usersettings.Settings(APP_NAME)
-s.add_setting("mtga_path", str, default="")
+s.add_setting("mtga_path", str, default=DEFAULT_PATH if Path(DEFAULT_PATH).exists() else "")
 s.add_setting("backup_path", str, default=dirs.user_data_dir)
 s.load_settings()
 

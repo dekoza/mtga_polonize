@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
+a = Analysis(['src/polonizator.py'],
              pathex=['/home/minder/kufer/mindstorm/Hobby/MtG/autotrans'],
              binaries=[],
              datas=[],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='main',
+          name='polonizator',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

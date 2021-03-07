@@ -6,7 +6,6 @@ authors = ["Dominik Kozaczko <dominik@kozaczko.info>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-typer = "^0.3.2"
 requests = "^2.25.1"
 PySimpleGUI = "^4.35.0"
 usersettings = "^1.1.5"

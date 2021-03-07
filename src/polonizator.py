@@ -149,7 +149,7 @@ def create_main_window(settings):
     ]
 
     layout = [
-        [sg.Text("Spolszczenie MTG Arena", font="Any 15", justification="center")],
+        [sg.Text("Polonizator MTG Arena", font="Any 15", justification="center")],
         [sg.Text("https://mtgpopolsku.pl", font="Any 10", justification="center")],
         [
             text_label("Zainstalowana wersja"),
@@ -168,7 +168,7 @@ def create_main_window(settings):
             sg.Button("Wyjdź"),
         ],
     ]
-    window = sg.Window("Spolszczenie MTGA", layout, finalize=True)
+    window = sg.Window("Polonizator MTGA", layout, finalize=True)
     return window
 
 
@@ -183,7 +183,7 @@ def create_settings_window(settings):
         [sg.Button("Zapisz"), sg.Button("Anuluj")],
     ]
 
-    window = sg.Window("Settings", layout, keep_on_top=True, finalize=True)
+    window = sg.Window("Ustawienia", layout, keep_on_top=True, finalize=True)
 
     window["-MTGA PATH-"].update(value=settings["mtga_path"])
 

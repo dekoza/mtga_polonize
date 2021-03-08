@@ -1,7 +1,7 @@
 import shutil
 import time
 import zipfile
-
+from typing import List, Tuple
 import PySimpleGUI as sg
 from pathlib import Path
 import os
@@ -9,6 +9,10 @@ import usersettings
 import requests
 from appdirs import AppDirs
 import tempfile
+import logging
+
+LOG_FILENAME = 'polonizator.log'
+logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
 
 DEFAULT_PATH = "C:/Program Files/Wizards of the Coast/MTGA/"
 APP_NAME = "pl.mtgpopolsku.app"
@@ -67,7 +71,7 @@ def is_translated(file_path: Path) -> bool:
         return "mtgapl" in datfile.read()
 
 
-def backup_files(file_list: list[str], bar: sg.ProgressBar):
+def backup_files(file_list: List[str], bar: sg.ProgressBar):
     bar.update(0)
     source_path = Path(s.mtga_path)
     dest_path = Path(dirs.user_data_dir)
@@ -80,7 +84,7 @@ def backup_files(file_list: list[str], bar: sg.ProgressBar):
             continue
         rel_dir_path = Path(dat_filename).parent
         os.makedirs(dest_path / rel_dir_path, exist_ok=True)
-        mtga_filename = dat_filename.removesuffix(".dat")
+        mtga_filename = dat_filename[:-4]
         src_mtga_file_path = source_path / mtga_filename
         shutil.copy2(src_dat_file_path, dest_path / dat_filename, follow_symlinks=True)
         shutil.copy2(
@@ -97,7 +101,7 @@ def revert_translation(bar: sg.ProgressBar):
     shutil.copytree(source_path, dest_path, dirs_exist_ok=True)
 
 
-def unpack_archive(archive_path, bar: sg.ProgressBar) -> tuple[Path, list[str]]:
+def unpack_archive(archive_path, bar: sg.ProgressBar) -> Tuple[Path, List[str]]:
     unpacked = 0
     bar.update(0)
     dest_path = archive_path.parent
@@ -116,7 +120,7 @@ def unpack_archive(archive_path, bar: sg.ProgressBar) -> tuple[Path, list[str]]:
     return dest_path, members
 
 
-def copy_new_files(file_list: list[str], source_path: Path, bar: sg.ProgressBar):
+def copy_new_files(file_list: List[str], source_path: Path, bar: sg.ProgressBar):
     dest_path = Path(s.mtga_path)
     prog_state = copied = 0
     total_files = len(file_list)
@@ -130,7 +134,7 @@ def copy_new_files(file_list: list[str], source_path: Path, bar: sg.ProgressBar)
 
 def backups_exist() -> bool:
     dest_path = Path(dirs.user_data_dir)
-    return (dest_path / "MTGA_Data/Downloads").exists()
+    return (dest_path / "MTGA_Data"/"Downloads").exists()
 
 
 def text_label(text):
@@ -209,16 +213,17 @@ def get_data_loc_dat(file_list):
 
 
 def get_installed_version():
-    if not (s.mtga_path and (mtga_path := Path(s.mtga_path)).exists()):
+    mtga_path = Path(s.mtga_path)
+    if not (s.mtga_path and mtga_path.exists()):
         return ""
-    path = mtga_path / "MTGA_Data/Downloads/Data"
+    path = mtga_path / "MTGA_Data"/"Downloads"/"Data"
     if not path.exists():
         return ""
     filename = get_data_loc_dat(os.listdir(path))
     with open(path / filename) as datfile:
         for line in datfile:
             if line.startswith("mtgapl"):
-                return line.strip().removeprefix("mtgapl:")
+                return line.strip()[7:]
 
 
 def get_newest_version():
@@ -310,5 +315,8 @@ def main():
                 window["-PROG SECTION-"].update(visible=False)
     window.close()
 
+try:
+    main()
+except:
+    logging.exception("Oczko się urwało temu programu")
 
-main()
